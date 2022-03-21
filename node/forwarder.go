@@ -103,6 +103,7 @@ func (n *Forwarder) LastBlockHeightAndHash(ctx context.Context) (*api.LastBlockH
 			zap.Time("request.time", time.Now()),
 			zap.Uint64("block.height", resp.Height),
 		)
+		println("block.height", resp.Height, "clt", clt)
 	}
 
 	return resp, clt, err
@@ -113,6 +114,9 @@ func (n *Forwarder) SendTx(ctx context.Context, tx *commandspb.Transaction, ty a
 		Tx:   tx,
 		Type: ty,
 	}
+
+	println("sending transaction to", cltIdx)
+
 	var resp *api.SubmitTransactionResponse
 	if cltIdx < 0 {
 		cltIdx = n.nextClt()
