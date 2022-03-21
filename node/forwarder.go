@@ -90,7 +90,10 @@ func (n *Forwarder) LastBlockHeightAndHash(ctx context.Context) (*api.LastBlockH
 				return err
 			}
 			resp = r
+			println("send last block request to", n.nodeCfgs.Hosts[clt])
+
 			n.log.Info("", zap.Uint64("block-height", r.Height), zap.String("block-hash", r.Hash), zap.Uint32("difficulty", r.SpamPowDifficulty), zap.String("function", r.SpamPowHashFunction))
+
 			return nil
 		},
 		backoff.WithMaxRetries(backoff.NewExponentialBackOff(), n.nodeCfgs.Retries),
@@ -107,6 +110,7 @@ func (n *Forwarder) LastBlockHeightAndHash(ctx context.Context) (*api.LastBlockH
 		println("block.height", resp.Height, "clt", clt)
 	}
 
+	println("returning clt", clt, "corresponding to", n.nodeCfgs.Hosts[clt])
 	return resp, clt, err
 }
 
@@ -116,7 +120,7 @@ func (n *Forwarder) SendTx(ctx context.Context, tx *commandspb.Transaction, ty a
 		Type: ty,
 	}
 
-	println("sending transaction to", cltIdx)
+	println("SendTx with index", cltIdx, "corresponding to", n.nodeCfgs.Hosts[cltIdx])
 
 	var resp *api.SubmitTransactionResponse
 	if cltIdx < 0 {
@@ -125,6 +129,7 @@ func (n *Forwarder) SendTx(ctx context.Context, tx *commandspb.Transaction, ty a
 	err := backoff.Retry(
 		func() error {
 			clt := n.clts[cltIdx]
+			println("sending transaction to index", cltIdx, "corresponding to", n.nodeCfgs.Hosts[cltIdx])
 			r, err := clt.SubmitTransaction(ctx, &req)
 			if err != nil {
 				n.log.Error("Couldn't send transaction", zap.Error(err))
