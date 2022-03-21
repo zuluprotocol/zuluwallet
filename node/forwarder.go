@@ -115,7 +115,8 @@ func (n *Forwarder) SendTx(ctx context.Context, tx *commandspb.Transaction, ty a
 	}
 	var resp *api.SubmitTransactionResponse
 	if cltIdx < 0 {
-		cltIdx = n.nextClt()
+		// cltIdx = n.nextClt()
+		n.log.Panic("we should never be here.")
 	}
 	err := backoff.Retry(
 		func() error {
