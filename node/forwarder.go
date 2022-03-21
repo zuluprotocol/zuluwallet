@@ -29,7 +29,7 @@ func NewForwarder(log *zap.Logger, nodeConfigs network.GRPCConfig) (*Forwarder, 
 
 	clts := make([]api.CoreServiceClient, 0, len(nodeConfigs.Hosts))
 	conns := make([]*grpc.ClientConn, 0, len(nodeConfigs.Hosts))
-	for _, v := range nodeConfigs.Hosts {
+	for i, v := range nodeConfigs.Hosts {
 		conn, err := grpc.Dial(v, grpc.WithInsecure())
 		if err != nil {
 			log.Debug("Couldn't dial gRPC host", zap.String("address", v))
@@ -37,6 +37,7 @@ func NewForwarder(log *zap.Logger, nodeConfigs network.GRPCConfig) (*Forwarder, 
 		}
 		conns = append(conns, conn)
 		clts = append(clts, api.NewCoreServiceClient(conn))
+		println("clt", i, "address", v)
 	}
 
 	return &Forwarder{
