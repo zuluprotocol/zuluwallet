@@ -732,6 +732,8 @@ func (s *Service) signTx(token string, w http.ResponseWriter, r *http.Request, _
 		return
 	}
 
+	println("got block height", blockData.Height, "from client", cltIdx)
+
 	name, err := s.auth.VerifyToken(token)
 	if err != nil {
 		s.writeForbiddenError(w, err)
@@ -760,6 +762,8 @@ func (s *Service) signTx(token string, w http.ResponseWriter, r *http.Request, _
 		Tid:   tid,
 		Nonce: powNonce,
 	}
+
+	println("sending transaction for block height", blockData.Height, "to client", cltIdx)
 
 	txHash, err := s.nodeForward.SendTx(r.Context(), tx, ty, cltIdx)
 	if err != nil {
