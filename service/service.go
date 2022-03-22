@@ -763,7 +763,7 @@ func (s *Service) signTx(token string, w http.ResponseWriter, r *http.Request, _
 		Nonce: powNonce,
 	}
 
-	println("sending transaction for block height", blockData.Height, "to client", cltIdx)
+	println("sending transaction for block height", blockData.Height, "to client", cltIdx, "tid", tid)
 
 	txHash, err := s.nodeForward.SendTx(r.Context(), tx, ty, cltIdx)
 	if err != nil {
